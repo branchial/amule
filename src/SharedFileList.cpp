@@ -487,17 +487,17 @@ unsigned CSharedFileList::AddFilesFromDirectory(const CPath& directory, TaskList
 
 bool CSharedFileList::AddFile(CKnownFile* pFile)
 {
-	wxASSERT(pFile->GetHashCount() == pFile->GetED2KPartHashCount());
-
-	wxMutexLocker lock(list_mut);
-
-	CKnownFileMap::value_type entry(pFile->GetFileHash(), pFile);
-	if (m_Files_map.insert(entry).second) {
-		/* Keywords to publish on Kad */
-		m_keywords->AddKeywords(pFile);
-		theStats::AddSharedFile(pFile->GetFileSize());
-		return true;
-	}
+//	wxASSERT(pFile->GetHashCount() == pFile->GetED2KPartHashCount());
+//
+//	wxMutexLocker lock(list_mut);
+//
+//	CKnownFileMap::value_type entry(pFile->GetFileHash(), pFile);
+//	if (m_Files_map.insert(entry).second) {
+//		/* Keywords to publish on Kad */
+//		m_keywords->AddKeywords(pFile);
+//		theStats::AddSharedFile(pFile->GetFileSize());
+//		return true;
+//	}
 	return false;
 }
 
