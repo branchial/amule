@@ -51,7 +51,7 @@ void writePredefData(CFileDataIO* file)
 
 
 /////////////////////////////////////////////////////////////////////
-// Specialize this template for each implemention
+// Specialize this template for each implementation
 // of the CFileDataIO interface you wish to test.
 //
 // This struct must be a subclass of Test.
@@ -668,7 +668,7 @@ DECLARE_SIMPLE(CMemFile);
 TEST(CMemFile, AttachedBuffer)
 {
 	const size_t BufferLength = 1024;
-	byte buffer[BufferLength];
+	uint8_t buffer[BufferLength];
 
 	for (size_t i = 0; i < BufferLength; ++i) {
 		buffer[i] = i & 0xFF;
@@ -694,15 +694,15 @@ TEST(CMemFile, AttachedBuffer)
 	ASSERT_RAISES(CRunTimeException, file.WriteUInt8(0));
 
 	// Init with invalid buffer should fail
-	ASSERT_RAISES(CRunTimeException, new CMemFile(static_cast<const byte*>(NULL), 1024));
-	ASSERT_RAISES(CRunTimeException, new CMemFile(static_cast<byte*>(NULL), 1024));
+	ASSERT_RAISES(CRunTimeException, new CMemFile(static_cast<const uint8_t*>(NULL), 1024));
+	ASSERT_RAISES(CRunTimeException, new CMemFile(static_cast<uint8_t*>(NULL), 1024));
 }
 
 
 TEST(CMemFile, ConstBuffer)
 {
-	byte arr[10];
-	CMemFile file(const_cast<const byte*>(arr), sizeof(arr));
+	uint8_t arr[10];
+	CMemFile file(const_cast<const uint8_t*>(arr), sizeof(arr));
 
 	ASSERT_RAISES(CRunTimeException, file.WriteUInt8(0));
 	ASSERT_RAISES(CRunTimeException, file.WriteUInt16(0));
@@ -762,7 +762,6 @@ TEST(CFile, Constructor)
 		ASSERT_TRUE(file.fd() == CFile::fd_invalid);
 		ASSERT_RAISES(CRunTimeException, file.WriteUInt8(0));
 		ASSERT_RAISES(CRunTimeException, file.ReadUInt8());
-		ASSERT_RAISES(CRunTimeException, file.Seek(0, wxFromStart));
 		ASSERT_RAISES(CRunTimeException, file.GetLength());
 		ASSERT_RAISES(CRunTimeException, file.GetPosition());
 		ASSERT_RAISES(CRunTimeException, file.SetLength(13));
@@ -874,7 +873,7 @@ TEST(CFile, Create)
 		file.WriteUInt32(1);
 	}
 
-	// Check that owerwrite = false works as expected
+	// Check that overwrite = false works as expected
 	{
 		CFile file;
 		ASSERT_FALSE(file.Create(testFile, false, testMode));
@@ -893,7 +892,7 @@ TEST(CFile, Create)
 		ASSERT_TRUE(!file.IsOpened());
 	}
 
-	// Check that owerwrite = true works as expected
+	// Check that overwrite = true works as expected
 	{
 		CFile file;
 		ASSERT_TRUE(file.Create(testFile, true, testMode));

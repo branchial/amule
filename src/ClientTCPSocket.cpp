@@ -34,7 +34,7 @@
 #include "Preferences.h"	// Needed for thePrefs
 #include "Packet.h"		// Needed for CPacket
 #include "Statistics.h"		// Needed for theStats
-#include "Logger.h"		// Neeed for logRemoteClient
+#include "Logger.h"		// Needed for logRemoteClient
 #include "updownclient.h"	// Needed for CUpDownClient
 #include <common/Format.h>	// Needed for CFormat
 #include "amule.h"		// Needed for theApp
@@ -260,7 +260,7 @@ void CClientTCPSocket::Disconnect(const wxString& strReason)
 	byConnected = ES_DISCONNECTED;
 	if (m_client) {
 		if (m_client->Disconnected(strReason, true)) {
-			// Somehow, Safe_Delete() is beeing called by Disconnected(),
+			// Somehow, Safe_Delete() is being called by Disconnected(),
 			// or any other function that sets m_client to NULL,
 			// so we must check m_client first.
 			if (m_client) {
@@ -298,7 +298,7 @@ void CClientTCPSocket::Safe_Delete_Client()
 }
 
 
-bool CClientTCPSocket::ProcessPacket(const byte* buffer, uint32 size, uint8 opcode)
+bool CClientTCPSocket::ProcessPacket(const uint8_t* buffer, uint32 size, uint8 opcode)
 {
 	#ifdef __PACKET_RECV_DUMP__
 	//printf("Rec: OPCODE %x \n",opcode);
@@ -340,7 +340,7 @@ bool CClientTCPSocket::ProcessPacket(const byte* buffer, uint32 size, uint8 opco
 			theStats::AddDownOverheadOther(size);
 			bool bNewClient = !m_client;
 			if (bNewClient) {
-				// create new client to save standart informations
+				// create new client to save standard information
 				m_client = new CUpDownClient(this);
 			}
 
@@ -368,7 +368,7 @@ bool CClientTCPSocket::ProcessPacket(const byte* buffer, uint32 size, uint8 opco
 					m_client->Safe_Delete();
 					m_client = NULL;
 				}
-				Disconnect(wxT("Paranoid disconecting: ") + reason);
+				Disconnect(wxT("Paranoid disconnecting: ") + reason);
 				return false;
 			}
 
@@ -389,14 +389,14 @@ bool CClientTCPSocket::ProcessPacket(const byte* buffer, uint32 size, uint8 opco
 			// and the var. "client" will point to the known client.
 			// if not we keep our new-constructed client ;)
 			if (theApp->clientlist->AttachToAlreadyKnown(&m_client,this)) {
-				// update the old client informations
+				// update the old client information
 				bIsMuleHello = m_client->ProcessHelloPacket(buffer, size);
 			} else {
 				theApp->clientlist->AddClient(m_client);
 				m_client->SetCommentDirty();
 			}
 			Notify_SharedCtrlRefreshClient( m_client->ECID(), AVAILABLE_SOURCE );
-			// send a response packet with standart informations
+			// send a response packet with standard information
 			if ((m_client->GetHashType() == SO_EMULE) && !bIsMuleHello) {
 				m_client->SendMuleInfoPacket(false);
 			}
@@ -1016,14 +1016,14 @@ bool CClientTCPSocket::ProcessPacket(const byte* buffer, uint32 size, uint8 opco
 }
 
 
-bool CClientTCPSocket::ProcessExtPacket(const byte* buffer, uint32 size, uint8 opcode)
+bool CClientTCPSocket::ProcessExtPacket(const uint8_t* buffer, uint32 size, uint8 opcode)
 {
 	#ifdef __PACKET_RECV_DUMP__
 	//printf("Rec: OPCODE %x \n",opcode);
 	DumpMem(buffer,size);
 	#endif
 
-	// 0.42e - except the catchs on mem exception and file exception
+	// 0.42e - except the catches on mem exception and file exception
 	if (!m_client) {
 		throw wxString(wxT("Unknown clients sends extended protocol packet"));
 	}
@@ -1640,7 +1640,7 @@ bool CClientTCPSocket::ProcessExtPacket(const byte* buffer, uint32 size, uint8 o
 				break;
 			}
 			CUInt128 fileid = data.ReadUInt128();
-			byte fileid2[16];
+			uint8_t fileid2[16];
 			fileid.ToByteArray(fileid2);
 			const CMD4Hash fileHash(fileid2);
 			if (theApp->sharedfiles->GetFileByID(fileHash) == NULL) {
@@ -1819,7 +1819,7 @@ bool CClientTCPSocket::ProcessExtPacket(const byte* buffer, uint32 size, uint8 o
 	return true;
 }
 
-bool CClientTCPSocket::ProcessED2Kv2Packet(const byte* buffer, uint32 size, uint8 opcode)
+bool CClientTCPSocket::ProcessED2Kv2Packet(const uint8_t* buffer, uint32 size, uint8 opcode)
 {
 	#ifdef __PACKET_RECV_DUMP__
 	//printf("Rec: OPCODE %x ED2Kv2\n",opcode);
@@ -1934,7 +1934,7 @@ void CClientTCPSocket::OnError(int nErrorCode)
 		}
 	} else {
 		if (theLogger.IsEnabled(logClient) && nErrorCode != 107) {
-			// 0    -> No Error / Disconect
+			// 0    -> No Error / Disconnect
 			// 107  -> Transport endpoint is not connected
 			if (m_client) {
 				if (!m_client->GetUserName().IsEmpty()) {

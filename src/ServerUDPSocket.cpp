@@ -60,12 +60,12 @@ CServerUDPSocket::CServerUDPSocket(amuleIPV4Address &address, const CProxyData *
 }
 
 
-void CServerUDPSocket::OnPacketReceived(uint32 serverip, uint16 serverport, byte* buffer, size_t length)
+void CServerUDPSocket::OnPacketReceived(uint32 serverip, uint16 serverport, uint8_t* buffer, size_t length)
 {
 	wxCHECK_RET(length >= 2, wxT("Invalid packet."));
 
 	size_t nPayLoadLen = length;
-	byte* pBuffer = buffer;
+	uint8_t* pBuffer = buffer;
 	CServer* pServer = theApp->serverlist->GetServerByIPUDP(serverip, serverport, true);
 	if (pServer && thePrefs::IsServerCryptLayerUDPEnabled() &&
 		((pServer->GetServerKeyUDP() != 0 && pServer->SupportsObfuscationUDP()) || (pServer->GetCryptPingReplyPending() && pServer->GetChallenge() != 0)))
@@ -115,7 +115,7 @@ void CServerUDPSocket::ProcessPacket(CMemFile& packet, uint8 opcode, uint32 ip, 
 
 	try {
 		// Imported: OP_GLOBSEARCHRES, OP_GLOBFOUNDSOURCES & OP_GLOBSERVSTATRES
-		// This makes Server UDP Flags to be set correctly so we use less bandwith on asking servers for sources
+		// This makes Server UDP Flags to be set correctly so we use less bandwidth on asking servers for sources
 		// Also we process Search results and Found sources correctly now on 16.40 behaviour.
 		switch(opcode){
 			case OP_GLOBSEARCHRES: {
@@ -262,7 +262,7 @@ void CServerUDPSocket::ProcessPacket(CMemFile& packet, uint8 opcode, uint32 ip, 
 				// old packet: <name_len 2><name name_len><desc_len 2 desc_en>
 				// new packet: <challenge 4><taglist>
 				//
-				// NOTE: To properly distinguish between the two packets which are both useing the same opcode...
+				// NOTE: To properly distinguish between the two packets which are both using the same opcode...
 				// the first two bytes of <challenge> (in network byte order) have to be an invalid <name_len> at least.
 
 				uint16 Len = packet.ReadUInt16();
@@ -359,13 +359,13 @@ void CServerUDPSocket::SendPacket(CPacket* packet, CServer* host, bool delPacket
 	}
 
 	// 4 (default) for standard sending, 12 for obfuscated ping, that's all for now.
-	// Might be changed if encrypted bellow, so don't move it.
+	// Might be changed if encrypted below, so don't move it.
 	item.port = host->GetPort() + port_offset;
 
 	// We might need to encrypt the packet for this server.
 	if (!rawpacket && thePrefs::IsServerCryptLayerUDPEnabled() && host->GetServerKeyUDP() != 0 && host->SupportsObfuscationUDP()) {
 		uint16 uRawPacketSize = packet->GetPacketSize() + 2;
-		byte* pRawPacket = new byte[uRawPacketSize];
+		uint8_t* pRawPacket = new uint8_t[uRawPacketSize];
 		memcpy(pRawPacket, packet->GetUDPHeader(), 2);
 		memcpy(pRawPacket + 2, packet->GetDataBuffer(), packet->GetPacketSize());
 

@@ -25,11 +25,7 @@
 
 
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"             // Needed for PACKAGE
-#else
-#define PACKAGE "amule"
-#endif
+#include "config.h"		// Needed for PACKAGE
 
 #include <wx/log.h>
 
@@ -85,7 +81,7 @@ int alcc::OnRun ()
         {
             if (m_flagVerbose)
                 {
-                    wxLogMessage(_("%s ---> Non existant file !\n"),m_filesToHash[i].c_str());
+                    wxLogMessage(_("%s ---> Non existent file !\n"),m_filesToHash[i].c_str());
                 }
         }
     }

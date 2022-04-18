@@ -28,21 +28,17 @@
 #define AMULE_H
 
 
-#include <wx/app.h>		// Needed for wxApp
-#include <wx/intl.h>		// Needed for wxLocale
+#include <wx/app.h>			// Needed for wxApp
+#include <wx/intl.h>			// Needed for wxLocale
 
 
-#include "Types.h"		// Needed for int32, uint16 and uint64
+#include "Types.h"			// Needed for int32, uint16 and uint64
 #include <map>
 #ifndef __WINDOWS__
 	#include <signal.h>
-//	#include <wx/unix/execute.h>
 #endif // __WINDOWS__
 
-#ifdef HAVE_CONFIG_H
-#	include "config.h"		// Needed for ASIO_SOCKETS
-#endif
-
+#include "config.h"			// Needed for ASIO_SOCKETS
 
 class CAbstractFile;
 class CKnownFile;
@@ -445,12 +441,6 @@ extern CamuleGuiApp *theApp;
 	// wx 2.8 needs a hand-made event loop in any case
 	#define AMULED28_EVENTLOOP
 
-	// wx 2.8 also needs extra socket code, unless we have ASIO sockets
-	//
-	#ifdef HAVE_CONFIG_H
-	#	include "config.h"		// defines ASIO_SOCKETS
-	#endif
-
 	#ifndef ASIO_SOCKETS
 		// MSW: can't run amuled with 2.8 without ASIO sockets, just get it compiled
 		#ifndef __WINDOWS__
@@ -561,7 +551,7 @@ private:
 	// does not, leaving wxConvFile being set to wxConvLibc. File
 	// name conversion should be set otherwise amuled will abort to
 	// handle non-ASCII file names which monolithic amule can handle.
-	// This function are overrided to perform this.
+	// This function are overridden to perform this.
 	virtual bool Initialize(int& argc_, wxChar **argv_);
 
 #ifdef AMULED_APPTRAITS

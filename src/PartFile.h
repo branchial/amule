@@ -162,7 +162,7 @@ public:
 	int	getPartfileStatusRang() const;
 
 	// Barry - Added as replacement for BlockReceived to buffer data before writing to disk
-	uint32	WriteToBuffer(uint32 transize, byte *data, uint64 start, uint64 end, Requested_Block_Struct *block, const CUpDownClient* client);
+	uint32	WriteToBuffer(uint32 transize, uint8_t *data, uint64 start, uint64 end, Requested_Block_Struct *block, const CUpDownClient* client);
 	void	FlushBuffer(bool fromAICHRecoveryDataAvailable = false);
 
 	// Barry - Added to prevent list containing deleted blocks on shutdown
@@ -232,9 +232,9 @@ public:
 	bool	DelSource( CUpDownClient* client );
 
 	/**
-	 * Updates the requency of avilable parts from with the data the client provides.
+	 * Updates the frequency of available parts from with the data the client provides.
 	 *
-	 * @param client The clients whoose available parts should be considered.
+	 * @param client The clients whose available parts should be considered.
 	 * @param increment If true, the counts are incremented, otherwise they are decremented.
 	 *
 	 * This functions updates the frequency list of file-parts, using the clients

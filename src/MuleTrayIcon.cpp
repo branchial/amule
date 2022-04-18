@@ -235,7 +235,7 @@ void CMuleTrayIcon::SetTrayIcon(int Icon, uint32 percent)
 		IconWithSpeed.SelectObject(TempBMP);
 
 
-		// Speed bar is: centered, taking 80% of the icon heigh, and
+		// Speed bar is: centered, taking 80% of the icon height, and
 		// right-justified taking a 10% of the icon width.
 
 		// X
@@ -286,7 +286,14 @@ void CMuleTrayIcon::UpdateTray()
 
 wxMenu* CMuleTrayIcon::CreatePopupMenu()
 {
-	// Creates dinamically the menu to show the user.
+	float kBpsUp = theStats::GetUploadRate() / 1024.0;
+	float kBpsDown = theStats::GetDownloadRate() / 1024.0;
+	float MBpsUp = kBpsUp / 1024.0;
+	float MBpsDown = kBpsDown / 1024.0;
+	bool showMBpsUp = (MBpsUp >= 1);
+	bool showMBpsDown = (MBpsDown >= 1);
+
+	// Dynamically creates the menu to show the user.
 	wxMenu *traymenu = new wxMenu();
 	traymenu->SetTitle(_("aMule Tray Menu"));
 
@@ -316,9 +323,11 @@ wxMenu* CMuleTrayIcon::CreatePopupMenu()
 	}
 
 	traymenu->Append(TRAY_MENU_INFO, label);
-	label = CFormat(_("Download speed: %.1f")) % (theStats::GetDownloadRate() / 1024.0);
+	label = CFormat(_("Download speed: %.1f%s"))
+			% (showMBpsDown ? MBpsDown : kBpsDown) % (showMBpsDown ? _(" MB/s") : ((kBpsDown > 0) ? _(" kB/s") : wxT("")));
 	traymenu->Append(TRAY_MENU_INFO, label);
-	label = CFormat(_("Upload speed: %.1f")) % (theStats::GetUploadRate() / 1024.0);
+	label = CFormat(_("Upload speed: %.1f%s"))
+			% (showMBpsUp ? MBpsUp : kBpsUp) % (showMBpsUp ? _(" MB/s") : ((kBpsUp > 0) ? _(" kB/s") : wxT("")));
 	traymenu->Append(TRAY_MENU_INFO, label);
 	traymenu->AppendSeparator();
 

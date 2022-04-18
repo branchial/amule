@@ -24,17 +24,11 @@
 //
 
 
-#ifdef HAVE_CONFIG_H
-	#include "config.h"		// Needed for VERSION
-#else
-	#include <common/ClientVersion.h>
-#endif
-
-
+#include "config.h"			// Needed for VERSION
 #include "TextClient.h"
 
 #ifndef __WINDOWS__
-	#include <unistd.h> // Do_not_auto_remove
+	#include <unistd.h>		// Do_not_auto_remove
 #endif
 
 

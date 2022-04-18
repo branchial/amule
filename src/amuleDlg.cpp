@@ -26,52 +26,47 @@
 #include <wx/app.h>
 
 #include <wx/archive.h>
-#include <wx/config.h>		// Do_not_auto_remove (MacOS 10.3, wx 2.7)
-#include <wx/confbase.h>	// Do_not_auto_remove (MacOS 10.3, wx 2.7)
+#include <wx/config.h>				// Do_not_auto_remove (MacOS 10.3, wx 2.7)
+#include <wx/confbase.h>			// Do_not_auto_remove (MacOS 10.3, wx 2.7)
 #include <wx/html/htmlwin.h>
-#include <wx/mimetype.h>	// Do_not_auto_remove (win32)
+#include <wx/mimetype.h>			// Do_not_auto_remove (win32)
 #include <wx/stattext.h>
 #include <wx/stdpaths.h>
-#include <wx/textfile.h>	// Do_not_auto_remove (win32)
+#include <wx/textfile.h>			// Do_not_auto_remove (win32)
 #include <wx/tokenzr.h>
 #include <wx/wfstream.h>
 #include <wx/zipstrm.h>
 #include <wx/sysopt.h>
-#include <wx/wupdlock.h>	// Needed for wxWindowUpdateLocker
-#include <wx/utils.h>		// Needed for wxFindWindowAtPoint
+#include <wx/wupdlock.h>			// Needed for wxWindowUpdateLocker
+#include <wx/utils.h>				// Needed for wxFindWindowAtPoint
 
 #include <common/EventIDs.h>
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"		// Needed for SVNDATE, PACKAGE, VERSION
-#else
-#include <common/ClientVersion.h>
-#endif // HAVE_CONFIG_H
+#include "config.h"				// Needed for SVNDATE, PACKAGE, VERSION
+#include "amuleDlg.h"				// Interface declarations.
 
-#include "amuleDlg.h"		// Interface declarations.
-
-#include <common/Format.h>	// Needed for CFormat
-#include "amule.h"		// Needed for theApp
-#include "ChatWnd.h"		// Needed for CChatWnd
-#include "SourceListCtrl.h"	// Needed for CSourceListCtrl
-#include "DownloadListCtrl.h"	// Needed for CDownloadListCtrl
-#include "DownloadQueue.h"	// Needed for CDownloadQueue
-#include "KadDlg.h"		// Needed for CKadDlg
+#include <common/Format.h>			// Needed for CFormat
+#include "amule.h"				// Needed for theApp
+#include "ChatWnd.h"				// Needed for CChatWnd
+#include "SourceListCtrl.h"			// Needed for CSourceListCtrl
+#include "DownloadListCtrl.h"			// Needed for CDownloadListCtrl
+#include "DownloadQueue.h"			// Needed for CDownloadQueue
+#include "KadDlg.h"				// Needed for CKadDlg
 #include "Logger.h"
 #include "MuleTrayIcon.h"
-#include "muuli_wdr.h"		// Needed for ID_BUTTON*
-#include "Preferences.h"	// Needed for CPreferences
+#include "muuli_wdr.h"				// Needed for ID_BUTTON*
+#include "Preferences.h"			// Needed for CPreferences
 #include "PrefsUnifiedDlg.h"
-#include "SearchDlg.h"		// Needed for CSearchDlg
-#include "Server.h"		// Needed for CServer
-#include "ServerConnect.h"	// Needed for CServerConnect
-#include "ServerWnd.h"		// Needed for CServerWnd
-#include "SharedFilesWnd.h"	// Needed for CSharedFilesWnd
-#include "SharedFilePeersListCtrl.h" // Needed for CSharedFilePeersListCtrl
-#include "Statistics.h"		// Needed for theStats
-#include "StatisticsDlg.h"	// Needed for CStatisticsDlg
-#include "TerminationProcess.h"	// Needed for CTerminationProcess
-#include "TransferWnd.h"	// Needed for CTransferWnd
+#include "SearchDlg.h"				// Needed for CSearchDlg
+#include "Server.h"				// Needed for CServer
+#include "ServerConnect.h"			// Needed for CServerConnect
+#include "ServerWnd.h"				// Needed for CServerWnd
+#include "SharedFilesWnd.h"			// Needed for CSharedFilesWnd
+#include "SharedFilePeersListCtrl.h"		// Needed for CSharedFilePeersListCtrl
+#include "Statistics.h"				// Needed for theStats
+#include "StatisticsDlg.h"			// Needed for CStatisticsDlg
+#include "TerminationProcess.h"			// Needed for CTerminationProcess
+#include "TransferWnd.h"			// Needed for CTransferWnd
 #ifndef CLIENT_GUI
 #include "PartFileConvertDlg.h"
 #endif
@@ -82,14 +77,14 @@
 #endif
 
 #include "kademlia/kademlia/Kademlia.h"
-#include "MuleVersion.h"	// Needed for GetMuleVersion()
+#include "MuleVersion.h"			// Needed for GetMuleVersion()
 
 #ifdef ENABLE_IP2COUNTRY
-#include "IP2Country.h"		// Needed for IP2Country
+#include "IP2Country.h"				// Needed for IP2Country
 #endif
 
-#ifdef ENABLE_IP2COUNTRY	// That's no bug. MSVC has ENABLE_IP2COUNTRY always on,
-							// but dummy GeoIP.h turns ENABLE_IP2COUNTRY off again.
+#ifdef ENABLE_IP2COUNTRY			// That's no bug. MSVC has ENABLE_IP2COUNTRY always on,
+						// but dummy GeoIP.h turns ENABLE_IP2COUNTRY off again.
 void CamuleDlg::IP2CountryDownloadFinished(uint32 result)
 {
 	m_IP2Country->DownloadFinished(result);
@@ -841,12 +836,20 @@ void CamuleDlg::ShowTransferRate()
 {
 	float kBpsUp = theStats::GetUploadRate() / 1024.0;
 	float kBpsDown = theStats::GetDownloadRate() / 1024.0;
+	float MBpsUp = kBpsUp / 1024.0;
+	float MBpsDown = kBpsDown / 1024.0;
+	bool showMBpsUp = (MBpsUp >= 1);
+	bool showMBpsDown = (MBpsDown >= 1);
 	wxString buffer;
 	if( thePrefs::ShowOverhead() )
 	{
-		buffer = CFormat(_("Up: %.1f(%.1f) | Down: %.1f(%.1f)")) % kBpsUp % (theStats::GetUpOverheadRate() / 1024.0) % kBpsDown % (theStats::GetDownOverheadRate() / 1024.0);
+		buffer = CFormat(_("Up: %.1f%s (%.1f) | Down: %.1f%s (%.1f)"))
+				 % (showMBpsUp ? MBpsUp : kBpsUp) % (showMBpsUp ? _(" MB/s") : ((kBpsUp > 0) ? _(" kB/s") : wxT(""))) % (theStats::GetUpOverheadRate() / 1024.0)
+				 % (showMBpsDown ? MBpsDown : kBpsDown) % (showMBpsDown ? _(" MB/s") : ((kBpsDown > 0) ? _(" kB/s") : wxT(""))) % (theStats::GetDownOverheadRate() / 1024.0);
 	} else {
-		buffer = CFormat(_("Up: %.1f | Down: %.1f")) % kBpsUp % kBpsDown;
+		buffer = CFormat(_("Up: %.1f%s | Down: %.1f%s"))
+				 % (showMBpsUp ? MBpsUp : kBpsUp) % (showMBpsUp ? _(" MB/s") : ((kBpsUp > 0) ? _(" kB/s") : wxT("")))
+				 % (showMBpsDown ? MBpsDown : kBpsDown) % (showMBpsDown ? _(" MB/s") : ((kBpsDown > 0) ? _(" kB/s") : wxT("")));
 	}
 	buffer.Truncate(50); // Max size 50
 
@@ -856,7 +859,9 @@ void CamuleDlg::ShowTransferRate()
 
 	// Show upload/download speed in title
 	if (thePrefs::GetShowRatesOnTitle()) {
-		wxString UpDownSpeed = CFormat(wxT("Up: %.1f | Down: %.1f")) % kBpsUp % kBpsDown;
+		wxString UpDownSpeed = CFormat(wxT("Up: %.1f%s | Down: %.1f%s"))
+						   % (showMBpsUp ? MBpsUp : kBpsUp) % (showMBpsUp ? _(" MB/s") : ((kBpsUp > 0) ? _(" kB/s") : wxT("")))
+						   % (showMBpsDown ? MBpsDown : kBpsDown) % (showMBpsDown ? _(" MB/s") : ((kBpsDown > 0) ? _(" kB/s") : wxT("")));
 		if (thePrefs::GetShowRatesOnTitle() == 1) {
 			SetTitle(theApp->m_FrameTitle + wxT(" -- ") + UpDownSpeed);
 		} else {
@@ -1318,7 +1323,7 @@ void CamuleDlg::Apply_Toolbar_Skin(wxToolBar *wndToolbar)
 	wndToolbar->ToggleTool(ID_BUTTONDOWNLOADS, true);
 
 	// Needed for non-GTK platforms, where the
-	// items don't get added immediatly.
+	// items don't get added immediately.
 	wndToolbar->Realize();
 
 	// Updates the "Connect" button, and so on.

@@ -28,9 +28,7 @@
 
 #include <sys/types.h>
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include "WebServer.h"
 #include <ec/cpp/ECSpecialTags.h>
@@ -41,8 +39,8 @@
 #include <wx/datetime.h>
 
 /*
- * Built-in php functions. Those are amule-specific funcions, accessing EC and internal
- * datastructre
+ * Built-in php functions. Those are amule-specific functions, accessing EC and internal
+ * datastructure
  *
  */
 

@@ -248,7 +248,7 @@ void CUpDownClient::CreateNextBlockPackage()
 
 			SetUploadFileID(srcfile);
 
-			// check extention to decide whether to compress or not
+			// check extension to decide whether to compress or not
 			if (m_byDataCompVer == 1 && GetFiletype(srcfile->GetFileName()) != ftArchive) {
 				CreatePackedPackets(area.GetBuffer(), togo, currentblock);
 			} else {
@@ -277,12 +277,12 @@ void CUpDownClient::CreateNextBlockPackage()
 		AddDebugLogLineN(logClient, GetClientFullInfo() + wxT(" requested file-data at an invalid position - disconnecting"));
 	}
 
-	// Error occured.
+	// Error occurred.
 	theApp->uploadqueue->RemoveFromUploadQueue(this);
 }
 
 
-void CUpDownClient::CreateStandardPackets(const byte* buffer, uint32 togo, Requested_Block_Struct* currentblock)
+void CUpDownClient::CreateStandardPackets(const uint8_t* buffer, uint32 togo, Requested_Block_Struct* currentblock)
 {
 	uint32 nPacketSize;
 
@@ -330,10 +330,10 @@ void CUpDownClient::CreateStandardPackets(const byte* buffer, uint32 togo, Reque
 }
 
 
-void CUpDownClient::CreatePackedPackets(const byte* buffer, uint32 togo, Requested_Block_Struct* currentblock)
+void CUpDownClient::CreatePackedPackets(const uint8_t* buffer, uint32 togo, Requested_Block_Struct* currentblock)
 {
 	uLongf newsize = togo+300;
-	CScopedArray<byte> output(newsize);
+	CScopedArray<uint8_t> output(newsize);
 	uint16 result = compress2(output.get(), &newsize, buffer, togo, 9);
 	if (result != Z_OK || togo <= newsize){
 		CreateStandardPackets(buffer, togo, currentblock);
@@ -651,7 +651,7 @@ void CUpDownClient::SendOutOfPartReqsAndAddToWaitingQueue()
 	//the downloader didn't send any request blocks. Then the connection times out..
 	//I did some tests with eDonkey also and it seems to work well with them also..
 
-	// Send this inmediately, don't queue.
+	// Send this immediately, don't queue.
 	CPacket* pPacket = new CPacket(OP_OUTOFPARTREQS, 0, OP_EDONKEYPROT);
 	theStats::AddUpOverheadFileRequest(pPacket->GetPacketSize());
 	AddDebugLogLineN( logLocalClient, wxT("Local Client: OP_OUTOFPARTREQS to ") + GetFullIP() );
@@ -796,7 +796,7 @@ void CUpDownClient::CheckForAggressive()
 {
 	uint32 cur_time = ::GetTickCount();
 
-	// First call, initalize
+	// First call, initialize
 	if ( !m_LastFileRequest ) {
 		m_LastFileRequest = cur_time;
 		return;
@@ -836,7 +836,7 @@ void CUpDownClient::SetUploadFileID(const CMD4Hash& new_id)
 	SetUploadFileID(uploadingfile); // This will update queue count on old and new file.
 }
 
-void CUpDownClient::ProcessRequestPartsPacket(const byte* pachPacket, uint32 nSize, bool largeblocks) {
+void CUpDownClient::ProcessRequestPartsPacket(const uint8_t* pachPacket, uint32 nSize, bool largeblocks) {
 
 	CMemFile data(pachPacket, nSize);
 

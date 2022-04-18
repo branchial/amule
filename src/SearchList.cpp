@@ -290,7 +290,7 @@ CSearchList::~CSearchList()
 
 void CSearchList::RemoveResults(long searchID)
 {
-	// A non-existant search id will just be ignored
+	// A non-existent search id will just be ignored
 	Kademlia::CSearchManager::StopSearch(searchID, true);
 
 	ResultMap::iterator it = m_results.find(searchID);
@@ -500,7 +500,7 @@ void CSearchList::OnGlobalSearchTimer(CTimerEvent& WXUNUSED(evt))
 }
 
 
-void CSearchList::ProcessSharedFileList(const byte* in_packet, uint32 size,
+void CSearchList::ProcessSharedFileList(const uint8_t* in_packet, uint32 size,
 	CUpDownClient* sender, bool *moreResultsAvailable, const wxString& directory)
 {
 	wxCHECK_RET(sender, wxT("No sender in search-results from client."));
@@ -584,7 +584,7 @@ bool CSearchList::AddToList(CSearchFile* toadd, bool clientResponse)
 	}
 
 
-	// Get, or implictly create, the map of results for this search
+	// Get, or implicitly create, the map of results for this search
 	CSearchResultList& results = m_results[toadd->GetSearchID()];
 
 	for (size_t i = 0; i < results.size(); ++i) {
@@ -725,7 +725,7 @@ CSearchList::CMemFilePtr CSearchList::CreateSearchData(CSearchParams& params, Se
 
 	unsigned int iParameterCount = 0;
 	if (_SearchExpr.m_aExpr.GetCount() <= 1) {
-		// lugdunummaster requested that searchs without OR or NOT operators,
+		// lugdunummaster requested that searches without OR or NOT operators,
 		// and hence with no more expressions than the string itself, be sent
 		// using a series of ANDed terms, intersecting the ANDs on the terms
 		// (but prepending them) instead of putting the boolean tree at the start
@@ -991,7 +991,7 @@ void CSearchList::KademliaSearchKeyword(uint32_t searchID, const Kademlia::CUInt
 	EUtf8Str eStrEncode = utf8strRaw;
 
 	CMemFile temp(250);
-	byte fileid[16];
+	uint8_t fileid[16];
 	fileID->ToByteArray(fileid);
 	temp.WriteHash(CMD4Hash(fileid));
 

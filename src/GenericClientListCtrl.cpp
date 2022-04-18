@@ -457,7 +457,7 @@ void CGenericClientListCtrl::ShowSources( const CKnownFileVector& files )
  * Helper-function: This function is used to gather selected items.
  *
  * @param list A pointer to the list to gather items from.
- * @return A list containing the selected items of the choosen types.
+ * @return A list containing the selected items of the chosen types.
  */
 static ItemList GetSelectedItems( CGenericClientListCtrl* list )
 {
@@ -876,14 +876,22 @@ void CGenericClientListCtrl::DrawClientItem(wxDC* dc, int nColumn, const wxRect&
 			break;
 		case ColumnUserSpeedDown:
 			if (item->GetType() != A4AF_SOURCE && client.GetKBpsDown() > 0.001) {
-				buffer = CFormat(_("%.1f kB/s")) % client.GetKBpsDown();
+				if (client.GetKBpsDown() >= 1024) {
+					buffer = CFormat(_("%.1f MB/s")) % (client.GetKBpsDown() / 1024.0);
+				} else {
+					buffer = CFormat(_("%.1f kB/s")) % client.GetKBpsDown();
+				}
 				dc->DrawText(buffer, rect.GetX(), rect.GetY() + iTextOffset);
 			}
 			break;
 		case ColumnUserSpeedUp:
 			// Datarate is in bytes.
-			if (item->GetType() != A4AF_SOURCE && client.GetUploadDatarate() > 1024) {
-				buffer = CFormat(_("%.1f kB/s")) % (client.GetUploadDatarate() / 1024.0);
+			if (item->GetType() != A4AF_SOURCE && client.GetUploadDatarate() >= 1024) {
+				if (client.GetUploadDatarate() >= 1048576) {
+					buffer = CFormat(_("%.1f MB/s")) % (client.GetUploadDatarate() / 1048576.0);
+				} else {
+					buffer = CFormat(_("%.1f kB/s")) % (client.GetUploadDatarate() / 1024.0);
+				}
 				dc->DrawText(buffer, rect.GetX(), rect.GetY() + iTextOffset);
 			}
 			break;
@@ -1105,8 +1113,8 @@ int CGenericClientListCtrl::SortProc(wxUIntPtr param1, wxUIntPtr param2, long so
 	sortData &= CMuleListCtrl::COLUMN_MASK;
 	int comp = 0;
 
-	// Two sources, some different possibilites
-	// Avilable sources first, if we have both an
+	// Two sources, some different possibilities
+	// Available sources first, if we have both an
 	// available and an unavailable
 	comp = ( item2->GetType() - item1->GetType() );
 
@@ -1117,7 +1125,7 @@ int CGenericClientListCtrl::SortProc(wxUIntPtr param1, wxUIntPtr param2, long so
 		comp = Compare(item1->GetSource(), item2->GetSource(), sortData);
 	}
 
-	// We modify the result so that it matches with ascending or decending
+	// We modify the result so that it matches with ascending or descending
 	return sortMod * comp;
 }
 

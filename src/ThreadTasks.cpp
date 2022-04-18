@@ -36,13 +36,10 @@
 #include "Preferences.h"		// Needed for thePrefs
 #include "ScopedPtr.h"			// Needed for CScopedPtr and CScopedArray
 #include "PlatformSpecific.h"		// Needed for CanFSHandleSpecialChars
-
-#ifdef HAVE_CONFIG_H
-#	include "config.h"
-#endif
+#include "config.h"
 
 //! This hash represents the value for an empty MD4 hashing
-const byte g_emptyMD4Hash[16] = {
+const uint8_t g_emptyMD4Hash[16] = {
 	0x31, 0xD6, 0xCF, 0xE0, 0xD1, 0x6A, 0xE9, 0x31,
 	0xB7, 0x3C, 0x59, 0xD7, 0xE0, 0xC0, 0x89, 0xC0 };
 
@@ -257,7 +254,7 @@ void CHashingTask::OnLastTask()
 {
 	if (GetType() == wxT("Hashing")) {
 		// To prevent rehashing in case of crashes, we
-		// explicity save the list of hashed files here.
+		// explicitly save the list of hashed files here.
 		theApp->knownfiles->Save();
 
 		// Make sure the AICH-hashes are up to date.
@@ -270,7 +267,7 @@ void CHashingTask::OnLastTask()
 // CAICHSyncTask
 
 CAICHSyncTask::CAICHSyncTask()
-	: CThreadTask(wxT("AICH Syncronizing"), wxEmptyString, ETP_Low)
+	: CThreadTask(wxT("AICH Synchronizing"), wxEmptyString, ETP_Low)
 {
 }
 
@@ -279,7 +276,7 @@ void CAICHSyncTask::Entry()
 {
 	ConvertToKnown2ToKnown264();
 
-	AddDebugLogLineN( logAICHThread, wxT("Syncronization thread started.") );
+	AddDebugLogLineN( logAICHThread, wxT("Synchronization thread started.") );
 
 	// We collect all masterhashs which we find in the known2.met and store them in a list
 	std::list<CAICHHash> hashlist;
@@ -383,7 +380,7 @@ bool CAICHSyncTask::ConvertToKnown2ToKnown264()
 			CAICHHash aichHash(&oldfile);
 			uint32 nHashCount = oldfile.ReadUInt16();
 
-			CScopedArray<byte> buffer(nHashCount * CAICHHash::GetHashSize());
+			CScopedArray<uint8_t> buffer(nHashCount * CAICHHash::GetHashSize());
 
 			oldfile.Read(buffer.get(), nHashCount * CAICHHash::GetHashSize());
 			newfile.Write(aichHash.GetRawHash(), CAICHHash::GetHashSize());
@@ -432,7 +429,7 @@ void CCompletionTask::Entry()
 
 	{
 #ifndef AMULE_DAEMON
-		// Prevent the preference values from changing underneeth us.
+		// Prevent the preference values from changing underneath us.
 		wxMutexGuiLocker guiLock;
 #else
 		//#warning Thread-safety needed

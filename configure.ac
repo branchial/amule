@@ -28,7 +28,7 @@ AC_INIT([aMule],[SVN],[admin@amule.org])
 AM_INIT_AUTOMAKE
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES])
 
-AC_PREREQ(2.59)
+AC_PREREQ(2.62)
 
 AC_CONFIG_SRCDIR([src/amule.cpp])
 AC_CONFIG_HEADERS([config.h])
@@ -210,7 +210,7 @@ MULE_ARG_ENABLE([upnp], [yes], [do not compile UPnP code])
 MULE_IF_ENABLED_ANY([monolithic, amule-daemon],, [MULE_ENABLEVAR([upnp])=no])
 MULE_IF_ENABLED([upnp], [
 	LIBUPNP_CHECK(
-		[1.6.6],
+		[1.6.7],
 		[MULE_APPEND([LIBUPNP_CPPFLAGS], [-DENABLE_UPNP=1])],
 		[MULE_ENABLEVAR([upnp])=disabled
 		MULE_WARNING([UPnP code has been disabled because ${libupnp_error}.])]
@@ -218,12 +218,9 @@ MULE_IF_ENABLED([upnp], [
 ])dnl
 
 
-# Check for Crypto++ (requires C++)
+# Check for Crypto++ (requires C++) >= 5.5
 MULE_IF_ENABLED_ANY([monolithic, amule-daemon, amule-gui, fileview],
-[MULE_CHECK_CRYPTOPP([5.1], [
-	# Check for CryptoPP >= 5.5
-	AS_IF([test $CRYPTOPP_VERSION_NUMBER -ge "5005000"], [MULE_APPEND([CRYPTOPP_CPPFLAGS], [-D__WEAK_CRYPTO__])])
-], [
+[MULE_CHECK_CRYPTOPP([5.5],, [
 	AC_MSG_ERROR([
 	Could not find crypto++ installation or sources.
 	Please try again with --with-crypto-prefix=/my_crypto_prefix

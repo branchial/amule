@@ -568,7 +568,7 @@ void CUpDownClient::SetDownloadState(uint8 byNewState)
 }
 /* eMule 0.30c implementation, i give it a try (Creteil) END ... */
 
-void CUpDownClient::ProcessHashSet(const byte* packet, uint32 size)
+void CUpDownClient::ProcessHashSet(const uint8_t* packet, uint32 size)
 {
 	if ((!m_reqfile) || md4cmp(packet,m_reqfile->GetFileHash().GetHash())) {
 		throw wxString(wxT("Wrong fileid sent (ProcessHashSet)"));
@@ -830,7 +830,7 @@ The requests will still not exceed 180k, but may be smaller to
 fill a gap.
 */
 
-void CUpDownClient::ProcessBlockPacket(const byte* packet, uint32 size, bool packed, bool largeblocks)
+void CUpDownClient::ProcessBlockPacket(const uint8_t* packet, uint32 size, bool packed, bool largeblocks)
 {
 	// Ignore if no data required
 	if (!(GetDownloadState() == DS_DOWNLOADING || GetDownloadState() == DS_NONEEDEDPARTS)) {
@@ -902,7 +902,7 @@ void CUpDownClient::ProcessBlockPacket(const byte* packet, uint32 size, bool pac
 				// Found reserved block
 
 				if (cur_block->block->StartOffset == nStartPos) {
-					// This block just started transfering. Set the start time.
+					// This block just started transferring. Set the start time.
 					m_last_block_start = ::GetTickCountFullRes();
 				}
 
@@ -930,7 +930,7 @@ void CUpDownClient::ProcessBlockPacket(const byte* packet, uint32 size, bool pac
 						return;
 					}
 					// Write to disk (will be buffered in part file class)
-					lenWritten = m_reqfile->WriteToBuffer( size - header_size, (byte*)(packet + header_size), nStartPos, nEndPos, cur_block->block, this);
+					lenWritten = m_reqfile->WriteToBuffer( size - header_size, (uint8_t*)(packet + header_size), nStartPos, nEndPos, cur_block->block, this);
 				} else {
 					// Packed
 					wxASSERT( (long int)size > 0 );
@@ -942,10 +942,10 @@ void CUpDownClient::ProcessBlockPacket(const byte* packet, uint32 size, bool pac
 					if (lenUnzipped > (BLOCKSIZE + 300)) {
 						lenUnzipped = (BLOCKSIZE + 300);
 					}
-					byte *unzipped = new byte[lenUnzipped];
+					uint8_t *unzipped = new uint8_t[lenUnzipped];
 
 					// Try to unzip the packet
-					int result = unzip(cur_block, (byte*)(packet + header_size), (size - header_size), &unzipped, &lenUnzipped);
+					int result = unzip(cur_block, (uint8_t*)(packet + header_size), (size - header_size), &unzipped, &lenUnzipped);
 
 					// no block can be uncompressed to >2GB, 'lenUnzipped' is obviously erroneous.
 					if (result == Z_OK && ((int)lenUnzipped >= 0)) {
@@ -1046,7 +1046,7 @@ void CUpDownClient::ProcessBlockPacket(const byte* packet, uint32 size, bool pac
 	}
 }
 
-int CUpDownClient::unzip(Pending_Block_Struct *block, byte *zipped, uint32 lenZipped, byte **unzipped, uint32 *lenUnzipped, int iRecursion)
+int CUpDownClient::unzip(Pending_Block_Struct *block, uint8_t *zipped, uint32 lenZipped, uint8_t **unzipped, uint32 *lenUnzipped, int iRecursion)
 {
 	int err = Z_DATA_ERROR;
 
@@ -1112,7 +1112,7 @@ int CUpDownClient::unzip(Pending_Block_Struct *block, byte *zipped, uint32 lenZi
 			newLength = lenZipped * 2;
 		}
 		// Copy any data that was successfully unzipped to new array
-		byte *temp = new byte[newLength];
+		uint8_t *temp = new uint8_t[newLength];
 		wxASSERT( zS->total_out - block->totalUnzipped <= newLength );
 		memcpy(temp, (*unzipped), (zS->total_out - block->totalUnzipped));
 		delete [] (*unzipped);
@@ -1155,7 +1155,7 @@ int CUpDownClient::unzip(Pending_Block_Struct *block, byte *zipped, uint32 lenZi
 
 
 // Speed is now updated only when data was received, calculated as
-// (data received) / (time since last receiption)
+// (data received) / (time since last reception)
 // and slightly filtered (10s average).
 // Result is quite precise now and makes the DownloadRateAdjust workaround obsolete.
 
@@ -1403,7 +1403,7 @@ uint8 CUpDownClient::GetObfuscationStatus() const
 	return ret;
 }
 
-// IgnoreNoNeeded = will switch to files of which this source has no needed parts (if no better fiels found)
+// IgnoreNoNeeded = will switch to files of which this source has no needed parts (if no better files found)
 // ignoreSuspensions = ignore timelimit for A4Af jumping
 // bRemoveCompletely = do not readd the file which the source is swapped from to the A4AF lists (needed if deleting or stopping a file)
 // toFile = Try to swap to this partfile only
@@ -1480,7 +1480,7 @@ bool CUpDownClient::SwapToAnotherFile(bool bIgnoreNoNeeded, bool ignoreSuspensio
 
 			m_reqfile->RemoveDownloadingSource( this );
 
-			// Do we want to remove it completly? Say if the old file is getting deleted
+			// Do we want to remove it completely? Say if the old file is getting deleted
 			if ( !bRemoveCompletely ) {
 				m_reqfile->AddA4AFSource( this );
 
@@ -1601,7 +1601,7 @@ void CUpDownClient::SendAICHRequest(CPartFile* pForFile, uint16 nPart){
 	SafeSendPacket(packet);
 }
 
-void CUpDownClient::ProcessAICHAnswer(const byte* packet, uint32 size)
+void CUpDownClient::ProcessAICHAnswer(const uint8_t* packet, uint32 size)
 {
 	if (m_fAICHRequested == FALSE){
 		throw wxString(wxT("Received unrequested AICH Packet"));
@@ -1624,7 +1624,7 @@ void CUpDownClient::ProcessAICHAnswer(const byte* packet, uint32 size)
 			 && ahMasterHash == pPartFile->GetAICHHashset()->GetMasterHash())
 		{
 			if(pPartFile->GetAICHHashset()->ReadRecoveryData(request.m_nPart*PARTSIZE, &data)){
-				// finally all checks passed, everythings seem to be fine
+				// finally all checks passed, everything seems to be fine
 				AddDebugLogLineN(logAICHTransfer, wxT("AICH Packet Answer: Succeeded to read and validate received recoverydata"));
 				CAICHHashSet::RemoveClientAICHRequest(this);
 				pPartFile->AICHRecoveryDataAvailable(request.m_nPart);
@@ -1643,7 +1643,7 @@ void CUpDownClient::ProcessAICHAnswer(const byte* packet, uint32 size)
 }
 
 
-void CUpDownClient::ProcessAICHRequest(const byte* packet, uint32 size)
+void CUpDownClient::ProcessAICHRequest(const uint8_t* packet, uint32 size)
 {
 	if (size != 16 + 2 + CAICHHash::GetHashSize()) {
 		throw wxString(wxT("Received AICH Request Packet with wrong size"));
@@ -1666,7 +1666,7 @@ void CUpDownClient::ProcessAICHRequest(const byte* packet, uint32 size)
 			pKnownFile->GetAICHHashset()->GetMasterHash().Write(&fileResponse);
 			if (pKnownFile->GetAICHHashset()->CreatePartRecoveryData(nPart*PARTSIZE, &fileResponse)){
 				AddDebugLogLineN(logAICHTransfer,
-					CFormat(wxT("AICH Packet Request: Sucessfully created and send recoverydata for '%s' to %s"))
+					CFormat(wxT("AICH Packet Request: Successfully created and send recoverydata for '%s' to %s"))
 						% pKnownFile->GetFileName() % GetClientFullInfo());
 
 				CPacket* packAnswer = new CPacket(fileResponse, OP_EMULEPROT, OP_AICHANSWER);

@@ -633,7 +633,7 @@ bool CKnownFile::LoadTagsFromFile(const CFileDataIO* file)
 				SetLastPublishTimeKadSrc( newtag.GetInt(), 0 );
 
 				if(GetLastPublishTimeKadSrc() > (uint32)time(NULL)+KADEMLIAREPUBLISHTIMES) {
-					//There may be a posibility of an older client that saved a random number here.. This will check for that..
+					//There may be a possibility of an older client that saved a random number here.. This will check for that..
 					SetLastPublishTimeKadSrc(0, 0);
 				}
 				break;
@@ -695,7 +695,7 @@ bool CKnownFile::WriteToFile(CFileDataIO* file)
 		tagcount++;
 	}
 	// Float meta tags are currently not written. All older eMule versions < 0.28a have
-	// a bug in the meta tag reading+writing code. To achive maximum backward
+	// a bug in the meta tag reading+writing code. To achieve maximum backward
 	// compatibility for met files with older eMule versions we just don't write float
 	// tags. This is OK, because we (eMule) do not use float tags. The only float tags
 	// we may have to handle is the '# Sent' tag from the Hybrid, which is pretty
@@ -788,8 +788,8 @@ void CKnownFile::CreateHashFromHashlist(const ArrayOfCMD4Hash& hashes, CMD4Hash*
 {
 	wxCHECK_RET(hashes.size(), wxT("No input to hash from in CreateHashFromHashlist"));
 
-	std::vector<byte> buffer(hashes.size() * MD4HASH_LENGTH);
-	std::vector<byte>::iterator it = buffer.begin();
+	std::vector<uint8_t> buffer(hashes.size() * MD4HASH_LENGTH);
+	std::vector<uint8_t>::iterator it = buffer.begin();
 
 	for (size_t i = 0; i < hashes.size(); ++i) {
 		it = STLCopy_n(hashes[i].GetHash(), MD4HASH_LENGTH, it);
@@ -811,7 +811,7 @@ void CKnownFile::CreateHashFromFile(CFileAutoClose& file, uint64 offset, uint32 
 }
 
 
-void CKnownFile::CreateHashFromInput(const byte* input, uint32 Length, CMD4Hash* Output, CAICHHashTree* pShaHashOut )
+void CKnownFile::CreateHashFromInput(const uint8_t* input, uint32 Length, CMD4Hash* Output, CAICHHashTree* pShaHashOut )
 {
 	wxASSERT_MSG(Output || pShaHashOut, wxT("Nothing to do in CreateHashFromInput"));
 	{ wxCHECK_RET(input, wxT("No input to hash from in CreateHashFromInput")); }
@@ -820,7 +820,7 @@ void CKnownFile::CreateHashFromInput(const byte* input, uint32 Length, CMD4Hash*
 	CMemFile data(input, Length);
 
 	uint32 Required = Length;
-	byte   X[64*128];
+	uint8  X[64*128];
 
 	uint32	posCurrentEMBlock = 0;
 	uint32	nIACHPos = 0;
@@ -887,12 +887,8 @@ void CKnownFile::CreateHashFromInput(const byte* input, uint32 Length, CMD4Hash*
 	}
 
 	if (Output != NULL){
-		#ifdef __WEAK_CRYPTO__
-			CryptoPP::Weak::MD4 md4_hasher;
-		#else
-			CryptoPP::MD4 md4_hasher;
-		#endif
-		 md4_hasher.CalculateDigest(Output->GetHash(), input, Length);
+		CryptoPP::Weak::MD4 md4_hasher;
+		md4_hasher.CalculateDigest(Output->GetHash(), input, Length);
 	}
 }
 

@@ -57,7 +57,7 @@ UploadBandwidthThrottler::UploadBandwidthThrottler()
 
 
 /**
- * The destructor stops the thread. If the thread has already stoppped, destructor does nothing.
+ * The destructor stops the thread. If the thread has already stopped, destructor does nothing.
  */
 UploadBandwidthThrottler::~UploadBandwidthThrottler()
 {
@@ -100,11 +100,11 @@ uint64 UploadBandwidthThrottler::GetNumberOfSentBytesOverheadSinceLastCallAndRes
 
 /**
  * Add a socket to the list of sockets that have upload slots. The main thread will
- * continously call send on these sockets, to give them chance to work off their queues.
+ * continuously call send on these sockets, to give them chance to work off their queues.
  * The sockets are called in the order they exist in the list, so the top socket (index 0)
  * will be given a chance first to use bandwidth, and then the next socket (index 1) etc.
  *
- * It is possible to add a socket several times to the list without removing it inbetween,
+ * It is possible to add a socket several times to the list without removing it in between,
  * but that should be avoided.
  *
  * @param index insert the socket at this place in the list. An index that is higher than the
@@ -268,7 +268,7 @@ void* UploadBandwidthThrottler::Entry()
 	uint32 lastLoopTick = GetTickCountFullRes();
 	// Bytes to spend in current cycle. If we spend more this becomes negative and causes a wait next time.
 	sint32 bytesToSpend = 0;
-	uint32 allowedDataRate = 0;
+	uint32 allowedDataRate;
 	uint32 rememberedSlotCounter = 0;
 	uint32 extraSleepTime = TIME_BETWEEN_UPLOAD_LOOPS;
 

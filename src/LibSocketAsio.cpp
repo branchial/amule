@@ -23,12 +23,11 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301, USA
 //
 
-#ifdef HAVE_CONFIG_H
-#	include "config.h"		// Needed for HAVE_BOOST_SOURCES
-#endif
+#include "config.h"		// Needed for HAVE_BOOST_SOURCES
+
 
 #ifdef _MSC_VER
-#define _WIN32_WINNT 0x0501		// Boost complains otherwise
+#define _WIN32_WINNT 0x0501	// Boost complains otherwise
 #endif
 
 // Windows requires that Boost headers are included before wx headers.

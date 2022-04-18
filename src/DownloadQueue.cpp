@@ -408,7 +408,7 @@ bool CDownloadQueue::IsFileExisting( const CMD4Hash& fileid ) const
 
 #define RARITY_FACTOR 4 // < 25%
 #define NORMALITY_FACTOR 2 // <50%
-// x > NORMALITY_FACTOR -> High availablity.
+// x > NORMALITY_FACTOR -> High availability.
 
 void CDownloadQueue::Process()
 {
@@ -448,7 +448,7 @@ void CDownloadQueue::Process()
 			if (status == PS_READY || status == PS_EMPTY ){
 				cur_datarate += file->Process( downspeed, cur_udcounter );
 			} else {
-				//This will make sure we don't keep old sources to paused and stoped files..
+				//This will make sure we don't keep old sources to paused and stopped files..
 				file->StopPausedFile();
 			}
 
@@ -496,7 +496,7 @@ void CDownloadQueue::Process()
 				}
 				m_rareFileThreshold = (m_sourcecountlist.front() > 0) ? (m_sourcecountlist.front() - 1) : 1;
 
-				// 50% of the non-rare ones, with the curent #define values.
+				// 50% of the non-rare ones, with the current #define values.
 				int commoncutpoint = (nSourceGroups - rarecutpoint) / NORMALITY_FACTOR;
 				for (int i = 0; i < commoncutpoint; ++ i) {
 					m_sourcecountlist.pop_front();
@@ -975,7 +975,7 @@ void CDownloadQueue::DoStopUDPRequests()
 }
 
 
-// Comparison function needed by sort. Returns true if file1 preceeds file2
+// Comparison function needed by sort. Returns true if file1 precedes file2
 static bool ComparePartFiles(const CPartFile* file1, const CPartFile* file2) {
 	if (file1->GetDownPriority() != file2->GetDownPriority()) {
 		// To place high-priority files before low priority files we have to
@@ -1114,7 +1114,7 @@ void CDownloadQueue::ProcessLocalRequests()
 		if (iSize > 0) {
 			// create one 'packet' which contains all buffered OP_GETSOURCES ED2K packets to be sent with one TCP frame
 			// server credits: (16+4)*regularfiles + (16+4+8)*largefiles +1
-			CScopedPtr<CPacket> packet(new CPacket(new byte[iSize], dataTcpFrame.GetLength(), true, false));
+			CScopedPtr<CPacket> packet(new CPacket(new uint8_t[iSize], dataTcpFrame.GetLength(), true, false));
 			dataTcpFrame.Seek(0, wxFromStart);
 			dataTcpFrame.Read(packet->GetPacket(), iSize);
 			uint32 size = packet->GetPacketSize();
@@ -1591,7 +1591,7 @@ void CDownloadQueue::KademliaSearchFile(uint32_t searchID, const Kademlia::CUInt
 			//ctemp->SetServerIP(serverip);
 			//ctemp->SetServerPort(serverport);
 			ctemp->SetKadPort(udp);
-			byte cID[16];
+			uint8_t cID[16];
 			pcontactID->ToByteArray(cID);
 			ctemp->SetUserHash(CMD4Hash(cID));
 			break;
@@ -1609,7 +1609,7 @@ void CDownloadQueue::KademliaSearchFile(uint32_t searchID, const Kademlia::CUInt
 			// from this firewalled source, the compare method will match them.
 			ctemp->SetSourceFrom(SF_KADEMLIA);
 			ctemp->SetKadPort(udp);
-			byte cID[16];
+			uint8_t cID[16];
 			pcontactID->ToByteArray(cID);
 			ctemp->SetUserHash(CMD4Hash(cID));
 			pbuddyID->ToByteArray(cID);
@@ -1634,7 +1634,7 @@ void CDownloadQueue::KademliaSearchFile(uint32_t searchID, const Kademlia::CUInt
 			ctemp->SetSourceFrom(SF_KADEMLIA);
 			ctemp->SetKadPort(udp);
 			ctemp->SetIP(ED2KID); // need to set the IP address, which cannot be used for TCP but for UDP
-			byte cID[16];
+			uint8_t cID[16];
 			pcontactID->ToByteArray(cID);
 			ctemp->SetUserHash(CMD4Hash(cID));
 		}

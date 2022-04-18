@@ -23,15 +23,13 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301, USA
 //
 
-#ifdef HAVE_CONFIG_H
-#	include "config.h"		// Needed for ENABLE_UPNP
-#endif
+#include "config.h"		// Needed for ENABLE_UPNP
 
 #ifdef ENABLE_UPNP
 
 // check for broken Debian-hacked libUPnP
 #include <upnp.h>
-#ifdef STRING_H			// defined in UpnpString.h Yes, I would have liked UPNPSTRING_H much better.
+#ifdef STRING_H				// defined in UpnpString.h Yes, I would have liked UPNPSTRING_H much better.
 #define BROKEN_DEBIAN_LIBUPNP
 #endif
 
@@ -1645,7 +1643,7 @@ void CUPnPControlPoint::Subscribe(CUPnPService &service)
 		msg.str("");
 
 		// Now try to subscribe to this service. If the subscription
-		// is not successfull, we will not be notified about events,
+		// is not successful, we will not be notified about events,
 		// but it may be possible to use the service anyway.
 		errcode = UpnpSubscribe(m_UPnPClientHandle,
 			service.GetAbsEventSubURL().c_str(),

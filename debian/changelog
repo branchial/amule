@@ -1,3 +1,34 @@
+amule (1:2.3.3-1+git-20210424) stable; urgency=low
+
+  * Adapted new versioning
+  * switched to building by cmake
+  * Removed the configure target
+
+ -- Werner Mahr (Vollstrecker) <amule@vollstreckernet.de>  Sat, 24 Apr 2021 16:19:21 +0200
+
+amule (2.3.3+git-20210228) stable; urgency=low
+
+  * git-rev: 1e95a16b + 1
+  * fix build-deps for focal
+
+ -- Dévai Tamás (gonosztopi) <gonosztopi@amule.org>  Sun, 28 Feb 2021 09:13:39 +0100
+
+amule (2.3.3+git-20210227) stable; urgency=low
+
+  * git-rev: d442b256 + 1
+  * add Romanian translation
+  * spelling fixes
+
+ -- Dévai Tamás (gonosztopi) <gonosztopi@amule.org>  Sat, 27 Feb 2021 19:17:59 +0100
+
+amule (2.3.2+git-20210127) stable; urgency=low
+
+  * git-rev: 0e9e3efc + 1
+  * disabled plasmamule
+  * Tighten Build-Deps
+
+ -- Werner Mahr (Vollstrecker) <amule@vollstreckernet.de>  Wed, 27 Jan 2021 12:52:21 +0100
+ 
 amule (2.3.2+git-20191216) stable; urgency=low
 
   * git-rev: d157fe8 + 1

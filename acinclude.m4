@@ -32,10 +32,10 @@ m4_pattern_forbid(__mule_)dnl Check for unexpanded internal macros
 # -------------------- #
 
 dnl MULE_APPEND(VARNAME, VALUE)
-AC_DEFUN([MULE_APPEND], [$1="$$1 $2"])
+AC_DEFUN([MULE_APPEND], [m4_if([$2],, [m4_warn([syntax], [Appending nothing to $1 is a do-nothing!])], [$1="$$1 $2"])])
 
 dnl MULE_PREPEND(VARNAME, VALUE)
-AC_DEFUN([MULE_PREPEND], [$1="$2 $$1"])
+AC_DEFUN([MULE_PREPEND], [m4_if([$2],, [m4_warn([syntax], [Prepending nothing to $1 is a do-nothing!])], [$1="$2 $$1"])])
 
 dnl MULE_ADDFLAG(FLAGTYPE, VALUE)
 AC_DEFUN([MULE_ADDFLAG], [MULE_APPEND([MULE[]$1[]FLAGS], [$2])])
@@ -611,7 +611,7 @@ AC_DEFUN([MULE_DENOISER],
 	AS_IF([test ${with_denoise_level:-5} = yes], [with_denoise_level=5])
 	AS_IF([test ${with_denoise_level:-5} = no], [with_denoise_level=0])
 	AS_IF([test ${with_denoise_level:-5} -gt 4],
-		[AS_IF([test "${svndate:+set}" = "set"], [with_denoise_level=0], [with_denoise_level=4])])
+		[AS_IF([test "${svndate:+set}" = "set"], [with_denoise_level=1], [with_denoise_level=4])])
 	AC_MSG_RESULT([$with_denoise_level])
 
 	AC_CONFIG_COMMANDS([denoiser], [[if test $denoiserlevel -gt 0; then

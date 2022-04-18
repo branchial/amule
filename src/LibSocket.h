@@ -27,10 +27,7 @@
 #ifndef __LIBSOCKET_H__
 #define __LIBSOCKET_H__
 
-#ifdef HAVE_CONFIG_H
-#	include "config.h"		// Needed for ASIO_SOCKETS
-#endif
-
+#include "config.h"		// Needed for ASIO_SOCKETS
 #include "Types.h"
 class amuleIPV4Address;
 
@@ -308,7 +305,7 @@ public:
 			m_isDestroying = true;
 			SetNotify(0);
 			Notify(false);
-			Close(); // Destroy is suposed to call Close(), but.. it doesn't hurt.
+			Close(); // Destroy is supposed to call Close(), but.. it doesn't hurt.
 			wxSocketClient::Destroy();
 		}
 	}
