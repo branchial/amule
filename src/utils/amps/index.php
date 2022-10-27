@@ -2,7 +2,7 @@
 
 /**
  * AMPS - AMule PHP Statistics
- * Written by überpenguin, AMPS is an adaptation of BigBob's aStats
+ * Written by ï¿½berpenguin, AMPS is an adaptation of BigBob's aStats
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -79,11 +79,16 @@ if (!in_array("imagettftext", get_extension_funcs("gd")))
 // index.php?lang=xx or as an HTTP POST variable. The latter takes prescedence
 // over the former.
 
+$languages = array('ca', 'de', 'en', 'es', 'eu', 'fi', 'fr', 'hu', 'it', 'nl', 'pl', 'pt_BR', 'pt')
+
 if (isset($_GET["lang"]))
-	$lang = $_GET["lang"];
+	$i18n = htmlspecialchars($_GET["lang"]);
 
 if (isset($_POST["lang"]))
-	$lang = $_POST["lang"];
+	$i18n = htmlspecialchars($_POST["lang"]);
+
+if ($i18n in_array $languages)
+	$lang = $i18n
 
 if (isset($lang))
 {
@@ -755,7 +760,7 @@ else
 
 	global $lang;
 
-	echo "\t\t\t\t<tr><td><a href=\"".$_SERVER['PHP_SELF']."?lang=".$lang."&sig_image\"><img border=\"0\"".
+	echo "\t\t\t\t<tr><td><a href=\"".htmlspecialchars($_SERVER['PHP_SELF'])."?lang=".$lang."&sig_image\"><img border=\"0\"".
 		"src=\"".$_SERVER['PHP_SELF']."?lang=".$lang."&sig_image\" alt=\"\"></a></td></tr>\n";
 
 	// language selection
@@ -763,7 +768,7 @@ else
         echo $sectionend;
 	echo $sectiontablestart;
 
-	echo "\n\t\t\t\t<form method=\"POST\" action=\"".$_SERVER['PHP_SELF']."\">\n\t\t\t\t\t".
+	echo "\n\t\t\t\t<form method=\"POST\" action=\"".htmlspecialchars($_SERVER['PHP_SELF'])."\">\n\t\t\t\t\t".
 		$text["language"].":&nbsp;&nbsp;<select name=\"lang\">\n";
 	foreach ($completelangs as $langcode)
 		if ($langcode == $lang)

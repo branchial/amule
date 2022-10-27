@@ -115,7 +115,7 @@ inline char* nstrdup(const char* src)
 {
 	size_t len = (src ? strlen(src) : 0) + 1;
 	char *res = new char[len];
-	if ( src ) strcpy(res, src);
+	if ( src ) strncpy(res, src);
 	res[len-1] = 0;
 	return res;
 }

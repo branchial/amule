@@ -1347,8 +1347,8 @@ void php_expr_eval(PHP_EXP_NODE *expr, PHP_VALUE_NODE *result)
 				// later with "free" and not "delete"
 				result->str_val = (char *)malloc(strlen(result_val_left.str_val) +
 					strlen(result_val_right.str_val) + 1);
-				strcpy(result->str_val, result_val_left.str_val);
-				strcat(result->str_val, result_val_right.str_val);
+				strncpy(result->str_val, result_val_left.str_val);
+				strncat(result->str_val, result_val_right.str_val);
 			}
 			break;
 		case PHP_OP_MUX:

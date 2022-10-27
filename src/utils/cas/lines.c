@@ -72,6 +72,6 @@ void AppendToLine(char *lines[], int line, const char *text)
 		if ((lines[line] = realloc(lines[line], size)) == NULL)
 			return;
 		/* ... and append the new text. */
-		strcat(lines[line], text);
+		strncat(lines[line], text);
 	}
 }

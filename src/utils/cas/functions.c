@@ -167,10 +167,10 @@ char *get_path(const char *file)
 	if (ret == NULL)
 		return NULL;
 
-	strcpy(ret, saved_home);
+	strncpy(ret, saved_home);
 	ret[home_len] = CAS_DIR_SEPARATOR[0];
 	ret[home_len+1] = '\0';
-	strcat(ret, file);
+	strncat(ret, file);
 	/* the string is guaranteed to be null-terminated
 	 * so no need to do this...
 	 * ret[total_len] = '\0';
@@ -191,12 +191,12 @@ char *get_amule_path(const char *file, int force_directory, const char *cmdline_
 		return NULL;
 	}
 
-	strcpy(path, cmdline_path);
+	strncpy(path, cmdline_path);
 	if (force_directory) {
 		if (path[strlen(path) - 1] != CAS_DIR_SEPARATOR[0]) {
 			strcat(path, CAS_DIR_SEPARATOR);
 		}
-		strcat(path, file);
+		strncat(path, file);
 	} else {
 		if (path[strlen(path) - 1] == CAS_DIR_SEPARATOR[0]) {
 			strcat(path, file);
